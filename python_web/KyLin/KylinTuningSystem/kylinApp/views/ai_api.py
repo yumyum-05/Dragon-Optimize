@@ -759,7 +759,7 @@ def get_local_response(user_message):
     if '内存' in message:
         return '内存使用率‌：物理内存使用持续超过90%需要关注。Swap使用率‌：超过50%表明物理内存严重不足。页面错误率‌：Minor page faults：正常现象。Major page faults：每秒超过100次需调查。脏页比例‌：vm.dirty_ratio建议设置为10。vm.dirty_background_ratio建议设置为5 '
 
-    if '磁盘' in message or if 'I/O' in message:
+    if '磁盘' in message or  'I/O' in message:
         return '磁盘利用率‌：超过80%表明I/O瓶颈。I/O等待队列‌：持续超过2-3个请求表明磁盘过载。吞吐量基准‌：。机械硬盘：顺序读写约100MB/s，随机IOPS 100-300。SSD：顺序读写约500MB/s，随机IOPS数万'
 
     if '网络' in message:
