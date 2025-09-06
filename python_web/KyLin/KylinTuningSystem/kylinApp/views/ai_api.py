@@ -752,6 +752,17 @@ def get_local_response(user_message):
     # 问候相关
     if '你好' in message or 'hi' in message or 'hello' in message:
         return '您好！我是您的AI小助手 🤖 很高兴为您服务！我可以帮您解答系统监控、数据采集、性能分析等相关问题。'
-    
+        # 边界值相关
+    if 'CPU' in message:
+        return 'CPU使用率‌：用户态+系统态总和应保持在60-85%之间，超过85%表明进程可能在运行队列中等待。上下文切换次数‌：每秒超过5000次可能表明调度问题。iowait时间‌：超过20%表明存在磁盘I/O瓶颈。平均负载‌：15分钟平均负载不应超过CPU核心数的70%。 '
+
+    if '内存' in message:
+        return '内存使用率‌：物理内存使用持续超过90%需要关注。Swap使用率‌：超过50%表明物理内存严重不足。页面错误率‌：Minor page faults：正常现象。Major page faults：每秒超过100次需调查。脏页比例‌：vm.dirty_ratio建议设置为10。vm.dirty_background_ratio建议设置为5 '
+
+    if '磁盘' in message or if 'I/O' in message:
+        return '磁盘利用率‌：超过80%表明I/O瓶颈。I/O等待队列‌：持续超过2-3个请求表明磁盘过载。吞吐量基准‌：。机械硬盘：顺序读写约100MB/s，随机IOPS 100-300。SSD：顺序读写约500MB/s，随机IOPS数万'
+
+    if '网络' in message:
+        return '网络吞吐量‌：接收和发送的数据量。网络错误率‌：包括丢包、重传等错误。网络连接数‌：当前建立的连接数量。网络接口使用率‌：各网卡的繁忙程度。TCP重传率‌：反映网络质量'
     # 默认回复
     return '我理解您的问题，但可能需要更多信息。您可以询问关于系统监控、数据采集、性能分析等方面的问题，我会尽力帮助您！' 
