@@ -612,10 +612,6 @@ def execute_ai_strategy(request):
 @csrf_exempt
 def doubao_chat(request):
     """
-    AI聊天接口（使用Groq API）
-    
-    这个接口用于处理前端AI小助手的聊天请求，将请求转发到Groq API。
-    
     Args:
         request: Django HTTP请求对象，包含message和system_context
         
