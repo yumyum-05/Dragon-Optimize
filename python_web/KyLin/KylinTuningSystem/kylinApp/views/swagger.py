@@ -8,7 +8,7 @@ OPENAPI_SPEC = {
     "info": {
         "title": "Dragon Optimize API",
         "version": "1.0.0",
-        "description": "KyLin 系统优化平台的HTTP接口文档（基于Django函数视图，非DRF）。"
+        "description": "Dragon Optimize 系统优化平台的HTTP接口文档（基于Django函数视图，非DRF）。"
     },
     "paths": {
         "/api/{name}/{tp}/{number_range}/oneModel": {
