@@ -73,7 +73,6 @@ HEADERS = {
 def create_conversation(user_id: str) -> str:
     """
     创建AI对话会话
-    
     Args:
         user_id (str): 用户唯一标识符
         
@@ -162,7 +161,6 @@ def chat_stream(conversation_id: str, user_id: str, query: str, capture_result=T
                 elif event.event == "error":
                     logger.error(f"SSE事件错误: {event.data}")
                     break
-                    
             logger.info(f"接收AI回答完成，总长度: {len(full_result)}")
             return full_result if full_result.strip() else None
         else:
@@ -193,7 +191,6 @@ def chat_stream(conversation_id: str, user_id: str, query: str, capture_result=T
 def chat_sync(conversation_id: str, user_id: str, query: str) -> str:
     """
     非流式对话：直接返回完整回答
-    
     Args:
         conversation_id (str): 会话ID
         user_id (str): 用户ID
@@ -205,24 +202,24 @@ def chat_sync(conversation_id: str, user_id: str, query: str) -> str:
     Raises:
         RuntimeError: 当API调用失败时
     """
-    url = f"{BASE_URL}/v3/chat?conversation_id={conversation_id}"
+    url = f"{BASE_URL}/v3/chat?conversation_id={conversation_id}"#ai接口的链接地址
     body = {
-        "bot_id": BOT_ID,
-        "user_id": user_id,
+        "bot_id": BOT_ID,#机器id
+        "user_id": user_id,#用户id
         "additional_messages": [
             {"role": "user", "content": query, "content_type": "text"}
-        ],
+        ],#添加用户的问题到body中
         "stream": False,  # 禁用流式响应
-        "auto_save_history": True
+        "auto_save_history": True#是否自动保存对话历史
     }
     
     # 发送同步请求
-    resp = requests.post(url, headers=HEADERS, json=body, timeout=30)
-    resp.raise_for_status()
-    data = resp.json()
+    resp = requests.post(url, headers=HEADERS, json=body, timeout=30)#发送同步请求
+    resp.raise_for_status()#检查http状态码
+    data = resp.json()#获取响应数据
     logger.debug(f"API响应: {data}")  # 调试信息
     
-    if data.get("code") != 0:
+    if data.get("code") != 0:#检查响应码并进行对应的操作
         raise RuntimeError(data)
     
     # 检查不同的响应格式并提取内容
@@ -288,7 +285,6 @@ def _wait_for_async_result(conversation_id: str, user_id: str, query: str) -> st
 def ai_optimize_infer():
     """
     使用工作流调用实现AI优化推理
-    
     这个函数会：
     1. 获取系统状态数据
     2. 调用AI工作流进行分析

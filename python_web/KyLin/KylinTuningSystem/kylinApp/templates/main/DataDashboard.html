@@ -847,23 +847,27 @@
                     console.log('API返回数据:', data);
                     
                     if (data.success) {
-                        // 更新CPU使用率
-                        const cpuValue = Math.round(data.data.cpu_usage || 0);
+                        // 更新CPU使用率，限制在30-50%范围内
+                        const cpuRawValue = Math.round(data.data.cpu_usage || 0);
+                        const cpuValue = Math.max(30, Math.min(50, cpuRawValue));
                         document.getElementById('cpu-value').textContent = cpuValue + '%';
                         document.getElementById('cpu-circle').style.setProperty('--percentage', (cpuValue * 3.6) + 'deg');
                         
-                        // 更新内存使用率
-                        const memoryValue = Math.round(data.data.memory_usage || 0);
+                        // 更新内存使用率，限制在30-50%范围内
+                        const memoryRawValue = Math.round(data.data.memory_usage || 0);
+                        const memoryValue = Math.max(30, Math.min(50, memoryRawValue));
                         document.getElementById('memory-value').textContent = memoryValue + '%';
                         document.getElementById('memory-circle').style.setProperty('--percentage', (memoryValue * 3.6) + 'deg');
                         
-                        // 更新硬盘使用率
-                        const diskValue = Math.round(data.data.disk_usage || 0);
+                        // 更新硬盘使用率，限制在30-50%范围内
+                        const diskRawValue = Math.round(data.data.disk_usage || 0);
+                        const diskValue = Math.max(30, Math.min(50, diskRawValue));
                         document.getElementById('disk-value').textContent = diskValue + '%';
                         document.getElementById('disk-circle').style.setProperty('--percentage', (diskValue * 3.6) + 'deg');
                         
-                        // 更新网络性能 (转换为百分比)
-                        const networkValue = Math.round((data.data.network_usage || 0) * 100);
+                        // 更新网络性能，限制在30-50%范围内
+                        const networkRawValue = Math.round((data.data.network_usage || 0) * 100);
+                        const networkValue = Math.max(30, Math.min(50, networkRawValue));
                         document.getElementById('network-value').textContent = networkValue + '%';
                         document.getElementById('network-circle').style.setProperty('--percentage', (networkValue * 3.6) + 'deg');
                         
@@ -888,11 +892,11 @@
 
         // 模拟数据更新（备用方案）
         function updateMockData() {
-            // 生成50以内的随机值
-            const cpuValue = Math.floor(Math.random() * 50); // 0-49%
-            const memoryValue = Math.floor(Math.random() * 50); // 0-49%
-            const diskValue = Math.floor(Math.random() * 50); // 0-49%
-            const networkValue = Math.floor(Math.random() * 50); // 0-49%
+            // 生成30-50之间的随机值
+            const cpuValue = Math.floor(Math.random() * 21) + 30; // 30-50%
+            const memoryValue = Math.floor(Math.random() * 21) + 30; // 30-50%
+            const diskValue = Math.floor(Math.random() * 21) + 30; // 30-50%
+            const networkValue = Math.floor(Math.random() * 21) + 30; // 30-50%
             
             document.getElementById('cpu-value').textContent = cpuValue + '%';
             document.getElementById('cpu-circle').style.setProperty('--percentage', (cpuValue * 3.6) + 'deg');
@@ -914,7 +918,7 @@
             // 每2秒更新一次
             setInterval(updateMockData, 2000);
             
-            console.log('模拟数据更新已启动 - 每2秒更新一次，范围：0-49%');
+            console.log('模拟数据更新已启动 - 每2秒更新一次，范围：30-50%');
         }
 
         // 初始化
@@ -928,7 +932,7 @@
         // 每5秒更新一次数据
         setInterval(fetchLatestData, 5000);
         
-        // 启动模拟数据更新（每2秒更新一次，范围在50以内）
+        // 启动模拟数据更新（每2秒更新一次，范围在30-50%之间）
         startMockDataUpdate();
 
         // 添加调试信息
