@@ -765,19 +765,7 @@
         // 显示加载状态
         $("#aiSuggestionText").val("AI调优分析中，请稍候...");
         
-        $.ajax({
-          url: "/api/ai_optimize/", // 你需要在后端实现这个API
-          type: "POST",
-          contentType: "application/json",
-            data: JSON.stringify({ question: lastCollectedDataStr, stream: true }),
-          success: function (res) {
-            var suggestionText = res && res.answer ? res.answer : (res && res.result) || "无AI建议";
-            $("#aiSuggestionText").val(suggestionText);
-          },
-          error: function () {
-            $("#aiSuggestionText").val("AI调优失败，请稍后重试。");
-          }
-        });
+        
       });
 
       // 一键调优按钮点击事件
