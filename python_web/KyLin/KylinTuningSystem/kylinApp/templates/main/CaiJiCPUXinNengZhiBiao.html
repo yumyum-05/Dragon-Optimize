@@ -505,6 +505,28 @@
         });
     }
 
+    // 清洗AI回答：去除联网搜索卡片和无关提示
+    function sanitizeAiAnswer(text) {
+      if (!text) return "";
+      var s = String(text).trim();
+      
+      // 如果包含重复内容，只保留一份
+      if (s.includes("知识库中暂无相关内容，正在全力联网搜索~")) {
+        // 找到第一个完整回答的结束位置
+        var parts = s.split("知识库中暂无相关内容，正在全力联网搜索~");
+        if (parts.length > 2) {
+          // 取第二部分（第一个完整回答）
+          s = parts[1].trim();
+        }
+      }
+      
+      // 清理多余的分隔符和空白
+      s = s.replace(/^[:：\-—\s]+/, '');
+      s = s.replace(/\s+/g, ' '); // 合并多个空格
+      
+      return s || "无AI建议";
+    }
+
     // 填充IP选择下拉框
     function populateIpSelect(data) {
         var ipSelect = $("#ipSelect");
@@ -563,7 +585,7 @@
       console.log("准备保存数据:", saveData);
       
       $.ajax({
-        url: "/api/save_collected_data/",
+        url: "/api/save_collection_data/",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(saveData),
@@ -765,7 +787,29 @@
         // 显示加载状态
         $("#aiSuggestionText").val("AI调优分析中，请稍候...");
         
+        // 调用AI优化API
+        var question = "请根据以下CPU性能数据给出优化建议:\n" + lastCollectedDataStr;
         
+        $.ajax({
+          url: "/api/ai_optimize/",
+          method: "POST",
+          data: JSON.stringify({ question: question, stream: true }),
+          contentType: "application/json",
+          timeout: 30000,
+          success: function(response) {
+            if (response && response.success && response.answer) {
+              var clean = sanitizeAiAnswer(response.answer);
+              $("#aiSuggestionText").val(clean);
+            } else {
+              $("#aiSuggestionText").val("未获取到AI回答，请稍后重试。");
+            }
+          },
+          error: function(xhr) {
+            var msg = "获取AI调优建议失败";
+            if (xhr && xhr.responseText) msg += "：" + xhr.responseText;
+            $("#aiSuggestionText").val(msg);
+          }
+        });
       });
 
       // 一键调优按钮点击事件

@@ -13,6 +13,7 @@ import requests
 import traceback
 import datetime
 from datetime import timezone
+from django.utils import timezone as django_timezone
 import re
 
 # 配置日志
@@ -1348,7 +1349,7 @@ def save_collected_data_api(request):
                 SystemTime=actual_data.get('cpu_system', actual_data.get('cpu_system_time', 0)),
                 Idle=actual_data.get('cpu_idle', actual_data.get('cpu_idle_time', 0)),
                 waitIO=actual_data.get('cpu_iowait', actual_data.get('cpu_wait_time', 0)),
-                currentTime=timezone.now()
+                currentTime=django_timezone.now()
             )
             cpu_data.save()
             logger.info(f"保存CPU数据成功: {cpu_data.id}")
@@ -1365,7 +1366,7 @@ def save_collected_data_api(request):
                 buffers=actual_data.get('mem_buffers', ''),
                 cache=actual_data.get('mem_cached', ''),
                 swap=actual_data.get('swap_used', ''),
-                currentTime=timezone.now()
+                currentTime=django_timezone.now()
             )
             memory_data.save()
             logger.info(f"保存内存数据成功: {memory_data.id}")
@@ -1383,7 +1384,7 @@ def save_collected_data_api(request):
                 writeCount=actual_data.get('disk_write_count', 0),
                 readBytes=actual_data.get('disk_read_bytes', 0),
                 writeBytes=actual_data.get('disk_write_bytes', 0),
-                currentTime=timezone.now()
+                currentTime=django_timezone.now()
             )
             disk_data.save()
             logger.info(f"保存磁盘数据成功: {disk_data.id}")
@@ -1397,7 +1398,7 @@ def save_collected_data_api(request):
                 recv=actual_data.get('net_bytes_recv', ''),
                 packetSent=actual_data.get('net_packets_sent', ''),
                 packetRecv=actual_data.get('net_packets_recv', ''),
-                currentTime=timezone.now()
+                currentTime=django_timezone.now()
             )
             network_data.save()
             logger.info(f"保存网络数据成功: {network_data.id}")
@@ -1414,7 +1415,7 @@ def save_collected_data_api(request):
                     SystemTime=actual_data.get('cpu_system', 0),
                     Idle=actual_data.get('cpu_idle', 0),
                     waitIO=actual_data.get('cpu_iowait', 0),
-                    currentTime=timezone.now()
+                    currentTime=django_timezone.now()
                 )
                 cpu_data.save()
                 logger.info(f"自动识别并保存CPU数据成功: {cpu_data.id}")

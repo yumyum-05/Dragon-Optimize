@@ -145,18 +145,45 @@ def chat_stream(conversation_id: str, user_id: str, query: str, capture_result=T
             
             # 遍历所有SSE事件
             for event in client.events():
+                logger.info(f"收到SSE事件: {event.event}, 数据: {event.data}")
                 if event.event == "conversation.message.delta":
                     try:
                         data = json.loads(event.data)
                         content = data.get("content", "")
                         if content:
                             full_result += content
-                            logger.debug(f"收到内容片段: {content}")
+                            logger.info(f"收到内容片段: {content}")
                     except json.JSONDecodeError as e:
                         logger.warning(f"解析SSE事件数据失败: {e}, 原始数据: {event.data}")
                         continue
-                elif event.event == "conversation.message.complete":
-                    logger.info("AI回答完成")
+                elif event.event == "conversation.message.completed":
+                    try:
+                        data = json.loads(event.data)
+                        # 检查是否是answer类型的消息
+                        if data.get("type") == "answer":
+                            content = data.get("content", "")
+                            if content:
+                                full_result += content
+                                logger.info(f"收到完整回答: {content}")
+                        # 如果是function_call类型，也尝试提取内容
+                        elif data.get("type") == "function_call":
+                            content = data.get("content", "")
+                            if content:
+                                try:
+                                    # 解析function_call的content
+                                    func_data = json.loads(content)
+                                    if "arguments" in func_data and "input" in func_data["arguments"]:
+                                        # 不要直接添加用户输入，而是等待AI的实际回答
+                                        logger.info(f"收到函数调用: {func_data['arguments']['input']}")
+                                except json.JSONDecodeError:
+                                    # 如果解析失败，直接使用原始content
+                                    logger.info(f"收到函数调用原始内容: {content}")
+                    except json.JSONDecodeError as e:
+                        logger.warning(f"解析完成事件数据失败: {e}, 原始数据: {event.data}")
+                    # 不要立即结束，继续等待更多消息
+                    logger.info("收到消息完成事件，继续等待...")
+                elif event.event == "conversation.chat.completed":
+                    logger.info("AI聊天完成")
                     break
                 elif event.event == "error":
                     logger.error(f"SSE事件错误: {event.data}")
