@@ -9,7 +9,7 @@ OPENAPI_SPEC = {
         "title": "Dragon Optimize API",
         "version": "1.0.0",
         "description": "Dragon Optimize 系统优化平台的HTTP接口文档（基于Django函数视图，非DRF）。"
-    },
+    },#绑定数据
     "paths": {
         "/api/{name}/{tp}/{number_range}/oneModel": {
             "post": {
